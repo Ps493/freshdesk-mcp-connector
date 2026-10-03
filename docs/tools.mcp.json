@@ -1,0 +1,201 @@
+{
+  "tools": [
+    {
+      "name": "check_connection",
+      "description": "Verify Freshdesk credentials and report rate-limit headroom.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "list_tickets",
+      "description": "List tickets (newest-updated first), paginated. Use for browsing/triage queues.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "filter": {
+            "enum": [
+              "new_and_my_open",
+              "watching",
+              "spam",
+              "deleted"
+            ]
+          },
+          "order_by": {
+            "enum": [
+              "created_at",
+              "due_by",
+              "updated_at",
+              "status"
+            ]
+          },
+          "order_type": {
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "updated_since": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_ticket",
+      "description": "Get one ticket by id; optionally with the first 10 conversations (private notes excluded by default).",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "ticket_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ticket_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "include_conversations": {
+            "type": "boolean",
+            "default": false
+          },
+          "include_private_notes": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "list_ticket_conversations",
+      "description": "Page through replies/notes on a ticket.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "ticket_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ticket_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "include_private_notes": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "search_tickets",
+      "description": "Search tickets with structured filters (AND-combined). Max 300 results (10 pages x 30).",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": [
+              "open",
+              "pending",
+              "resolved",
+              "closed"
+            ]
+          },
+          "priority": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "tag": {
+            "type": "string"
+          },
+          "created_after": {
+            "type": "string"
+          },
+          "created_before": {
+            "type": "string"
+          },
+          "updated_after": {
+            "type": "string"
+          },
+          "updated_before": {
+            "type": "string"
+          },
+          "requester_id": {
+            "type": "integer"
+          },
+          "agent_id": {
+            "type": "integer"
+          },
+          "group_id": {
+            "type": "integer"
+          },
+          "advanced_query": {
+            "type": "string",
+            "description": "Whitelisted raw Freshdesk query fragment, e.g. type:'Refund'"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    }
+  ]
+}
